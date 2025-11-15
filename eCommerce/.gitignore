@@ -1,2 +1,6 @@
 venv312*/
 
+lojaVenv*/
+
+__pycache__*/
+*.pyc
