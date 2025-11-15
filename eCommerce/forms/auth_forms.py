@@ -98,9 +98,3 @@ class AtualizarPerfilForm(FlaskForm):
     ])
     
     submit = SubmitField('Atualizar')
-    
-    def validate_email(self, field):
-        """Valida se o email já existe (exceto o do usuário atual)"""
-        cliente = Cliente.query.filter_by(email=field.data).first()
-        if cliente and cliente.id != self.cliente_id:
-            raise ValidationError('Este email já está cadastrado')

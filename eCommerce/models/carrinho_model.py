@@ -12,6 +12,7 @@ from extensions import db
 class Carrinho(db.Model):
     __tablename__ = 'carrinhos'
     id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
+    session_id = db.Column(db.String(36), nullable=True)
     cliente_id = Column(Integer, ForeignKey('clientes.id'), nullable=True)
     produto_id = Column(Integer)
     nome_produto = Column(String(256))

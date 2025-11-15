@@ -20,3 +20,14 @@ class Produto(db.Model):
     def tem_estoque(self, quantidade):
         """Verifica se há estoque suficiente para a quantidade solicitada"""
         return self.estoque >= quantidade
+    
+    def reduzir_estoque(self, quantidade):
+        """Reduz o estoque do produto"""
+        if self.tem_estoque(quantidade):
+            self.estoque -= quantidade
+        else:
+            raise ValueError("Estoque insuficiente")
+    
+    def aumentar_estoque(self, quantidade):
+        """Aumenta o estoque do produto"""
+        self.estoque += quantidade

@@ -68,31 +68,3 @@ def logout():
     flash('Você foi desconectado.', 'info')
     return redirect(url_for('auth.login'))
 
-@auth_bp.route('/perfil')
-@requer_autenticacao
-def perfil():
-    """Rota para visualizar perfil do cliente"""
-    cliente = get_cliente_autenticado()
-    return render_template('auth/perfil.html', cliente=cliente)
-
-@auth_bp.route('/perfil/editar', methods=['GET', 'POST'])
-@requer_autenticacao
-def editar_perfil():
-    """Rota para editar perfil do cliente"""
-    cliente = get_cliente_autenticado()
-    form = AtualizarPerfilForm()
-    
-    if form.validate_on_submit():
-        cliente.nome = form.nome.data
-        cliente.email = form.email.data
-        cliente.telefone = form.telefone.data
-        
-        db.session.commit()
-        flash('Perfil atualizado com sucesso!', 'success')
-        return redirect(url_for('auth.perfil'))
-    elif request.method == 'GET':
-        form.nome.data = cliente.nome
-        form.email.data = cliente.email
-        form.telefone.data = cliente.telefone
-    
-    return render_template('auth/editar_perfil.html', form=form, cliente=cliente)

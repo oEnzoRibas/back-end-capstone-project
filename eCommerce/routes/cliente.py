@@ -3,7 +3,7 @@ from flask import Blueprint, render_template, redirect, url_for, flash, request
 from extensions import db
 from models.cliente_model import Cliente
 from forms.auth_forms import AtualizarPerfilForm
-from utils.auth_utils import requer_autenticacao, get_cliente_autenticado
+from utils.auth_utils import requer_autenticacao, get_cliente_autenticado, requer_admin
 
 cliente_bp = Blueprint('cliente', __name__, url_prefix='/cliente')
 
@@ -35,3 +35,12 @@ def editar_perfil():
         form.telefone.data = cliente.telefone
     
     return render_template('cliente/editar_perfil.html', form=form, cliente=cliente)
+
+
+@cliente_bp.route('/usuarios')
+@requer_autenticacao
+@requer_admin
+def listar_usuarios():
+    """Rota para listar todos os usuários (apenas admin)"""
+    clientes = Cliente.query.all()
+    return render_template('cliente/listar_usuarios.html', usuarios=clientes)

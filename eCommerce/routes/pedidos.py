@@ -6,7 +6,7 @@ from models.pagamento_model import Pagamento
 from models.produto_model import Produto
 from forms.pagamento_forms import PagamentoForm
 from utils.auth_utils import requer_autenticacao, get_cliente_autenticado
-from utils.carrinho_utils import obter_carrinho_cliente, calcular_total_carrinho, limpar_carrinho
+from utils.carrinho_utils import obter_carrinho_atual, calcular_total_carrinho, limpar_carrinho
 from datetime import datetime
 
 pedidos_bp = Blueprint('pedidos', __name__, url_prefix='/pedidos')
@@ -15,9 +15,9 @@ pedidos_bp = Blueprint('pedidos', __name__, url_prefix='/pedidos')
 @requer_autenticacao
 def listar():
     """Rota para listar pedidos do cliente"""
-    cliente = get_cliente_autenticado()
+    clienteAuth = get_cliente_autenticado()
     page = request.args.get('page', 1, type=int)
-    pedidos = Pedido.query.filter_by(cliente_id=cliente.id).paginate(page=page, per_page=10)
+    pedidos = Pedido.query.filter_by(cliente_id=clienteAuth.id).paginate(page=page, per_page=10)
     return render_template('pedidos/listar.html', pedidos=pedidos)
 
 @pedidos_bp.route('/<int:pedido_id>')
@@ -39,7 +39,7 @@ def detalhes(pedido_id):
 def criar():
     """Rota para criar novo pedido a partir do carrinho"""
     cliente = get_cliente_autenticado()
-    items_carrinho = obter_carrinho_cliente(cliente.id)
+    items_carrinho = obter_carrinho_atual()
     
     if not items_carrinho:
         flash('Seu carrinho está vazio.', 'warning')
@@ -49,23 +49,19 @@ def criar():
     
     if form.validate_on_submit():
         try:
-            # Cria novo pedido
             pedido = Pedido(cliente_id=cliente.id)
             db.session.add(pedido)
-            db.session.flush()  # Para obter o ID do pedido
+            db.session.flush()
             
-            # Adiciona itens ao pedido e atualiza estoque
             total_pedido = 0
             for item_carrinho in items_carrinho:
                 produto = Produto.query.get(item_carrinho.produto_id)
                 
-                # Verifica estoque novamente
                 if not produto.tem_estoque(item_carrinho.quantidade):
                     db.session.rollback()
                     flash(f'Estoque insuficiente para {produto.nome}', 'danger')
                     return redirect(url_for('carrinho.visualizar'))
                 
-                # Cria item do pedido
                 item_pedido = ItemPedido(
                     pedido_id=pedido.id,
                     produto_id=produto.id,
@@ -74,12 +70,10 @@ def criar():
                 )
                 db.session.add(item_pedido)
                 
-                # Reduz estoque
                 produto.reduzir_estoque(item_carrinho.quantidade)
                 
                 total_pedido += item_pedido.calcular_subtotal()
             
-            # Cria pagamento
             pagamento = Pagamento(
                 pedido_id=pedido.id,
                 tipo=form.tipo_pagamento.data,
@@ -87,10 +81,8 @@ def criar():
             )
             db.session.add(pagamento)
             
-            # Limpa carrinho
-            limpar_carrinho(cliente.id)
+            limpar_carrinho()
             
-            # Confirma transação
             db.session.commit()
             
             flash('Pedido criado com sucesso! Aguardando confirmação de pagamento.', 'success')
@@ -101,7 +93,7 @@ def criar():
             flash(f'Erro ao criar pedido: {str(e)}', 'danger')
             return redirect(url_for('carrinho.visualizar'))
     
-    total = calcular_total_carrinho(cliente.id)
+    total = calcular_total_carrinho()
     return render_template('pedidos/criar.html', form=form, items=items_carrinho, total=total)
 
 @pedidos_bp.route('/<int:pedido_id>/confirmar-pagamento', methods=['POST'])
@@ -111,7 +103,6 @@ def confirmar_pagamento(pedido_id):
     cliente = get_cliente_autenticado()
     pedido = Pedido.query.get_or_404(pedido_id)
     
-    # Verifica se o pedido pertence ao cliente
     if pedido.cliente_id != cliente.id:
         flash('Você não tem permissão para acessar este pedido.', 'danger')
         return redirect(url_for('pedidos.listar'))
@@ -131,22 +122,18 @@ def cancelar(pedido_id):
     cliente = get_cliente_autenticado()
     pedido = Pedido.query.get_or_404(pedido_id)
     
-    # Verifica se o pedido pertence ao cliente
     if pedido.cliente_id != cliente.id:
         flash('Você não tem permissão para acessar este pedido.', 'danger')
         return redirect(url_for('pedidos.listar'))
     
-    # Verifica se o pedido pode ser cancelado
     if pedido.status not in ['pendente', 'confirmado']:
         flash('Este pedido não pode ser cancelado.', 'danger')
         return redirect(url_for('pedidos.detalhes', pedido_id=pedido.id))
     
-    # Restaura estoque
     for item in pedido.itens:
         produto = Produto.query.get(item.produto_id)
         produto.aumentar_estoque(item.quantidade)
     
-    # Atualiza status
     pedido.atualizar_status('cancelado')
     if pedido.pagamento:
         pedido.pagamento.cancelar_pagamento()

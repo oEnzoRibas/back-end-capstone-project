@@ -10,12 +10,16 @@ from extensions import db
 class Pedido(db.Model):
     __tablename__ = 'pedidos'
     id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
-    client_id = Column(Integer, ForeignKey('clientes.id'), nullable=False)
+    cliente_id = Column(Integer, ForeignKey('clientes.id'), nullable=False)
     data = Column(db.DateTime, default=datetime.datetime.now)
     status = Column(String(256), default="pendente")
+    itens = db.relationship('ItemPedido', backref='pedido', lazy=True, cascade='all, delete-orphan')
+    pagamentos = db.relationship('Pagamento', backref='pedido', lazy=True, cascade='all, delete-orphan')
 
     def __repr__(self):
         return f'<Pedido {self.id} - Cliente {self.client_id} - Status {self.status}>'
+    
+    
     
 """
 =================================================================
@@ -26,10 +30,17 @@ class ItemPedido(db.Model):
     __tablename__ = 'itens_pedido'
     id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
     pedido_id = Column(Integer, ForeignKey('pedidos.id'), nullable=False)
+    produto_id = Column(Integer, ForeignKey('produtos.id'), nullable=False)
     tipo = Column(String(256))
     valor = Column(db.Numeric(10,2), nullable=False)
     status = Column(String(256), default="aguardando")
-
+    quantidade = Column(Integer, nullable=False)
+    preco_unitario = db.Column(db.Numeric(10,2), nullable=False)
+    
     def __repr__(self):
-        return f'<ItemPedido {self.id} - Pedido {self.pedido_id} - Tipo {self.tipo} - Valor {self.valor}>'
+        return f'<ItemPedido {self.id} - Pedido {self.pedido_id} - Produto {self.produto_id}>'
+    
+    def calcular_subtotal(self):
+        """Calcula o valor total deste item."""
+        return float(self.preco_unitario) * self.quantidade
     

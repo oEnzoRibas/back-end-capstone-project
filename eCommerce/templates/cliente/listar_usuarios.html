@@ -1,38 +1,52 @@
+{%extends 'base.html' %}
+
 <header>
-    {# Usa a classe .navbar do seu CSS #}
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
-
+            {# Logo e link para a Home (assumindo que 'index.index' é a Home) #}
             <a class="navbar-brand" href="{{ url_for('index.index') }}">
                 🛒 eCommerce
             </a>
 
             <div class="navbar-nav ms-auto">
 
+                {# Link universal para o Catálogo #}
                 <a class="nav-link" href="{{ url_for('produtos.listar') }}">
                     Catálogo
                 </a>
 
+                {# Link universal para o Carrinho #}
                 <a class="nav-link" href="{{ url_for('carrinho.visualizar') }}">
                     Carrinho
                 </a>
 
+                {# ---------------------------------------------------- #}
+                {# OPÇÕES APENAS PARA ADMINISTRADOR #}
+                {% if current_user.is_authenticated and current_user.role == 'admin' %}
                 <a class="nav-link fw-bold text-danger" href="{{ url_for('cliente.listar_usuarios') }}">
                     <i class="fas fa-users"></i> Usuários
                 </a>
+                {% endif %}
+                {# ---------------------------------------------------- #}
 
+                {# LÓGICA CONDICIONAL DE AUTENTICAÇÃO #}
+                {% if current_user.is_authenticated %}
+                {# Usuário logado: Mostra nome e botão Sair #}
                 <a class="nav-link text-primary" href="{{ url_for('cliente.perfil') }}">
+                    Olá, **{{ current_user.nome.split(' ')[0] }}**
                 </a>
                 <a class="btn btn-secondary btn-sm" href="{{ url_for('auth.logout') }}">
-                    Logout
+                    Sair
                 </a>
-
+                {% else %}
+                {# Usuário deslogado: Mostra Login e Registro #}
                 <a class="nav-link" href="{{ url_for('auth.login') }}">
                     Login
                 </a>
                 <a class="btn btn-primary btn-sm ms-2" href="{{ url_for('auth.registrar') }}">
                     Registrar
                 </a>
+                {% endif %}
             </div>
         </div>
     </nav>

@@ -1,13 +1,20 @@
 import os
 from flask import Flask
 from config import Config
-from extensions import db
-
+from extensions import db, login_manager
 
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
     db.init_app(app)
+
+    login_manager.init_app(app)
+
+    login_manager.login_view = 'auth.login'
+
+    @login_manager.user_loader
+    def load_user(user_id):
+        return Cliente.query.get(int(user_id))
 
     with app.app_context():
         from models.cliente_model import Cliente
@@ -21,9 +28,10 @@ def create_app():
         admin = Cliente.query.filter_by(email="master@ecommerce.com").first()
         if not admin:
             admin = Cliente(
-                nome="Admin",
+                nome="master",
                 email="master@ecommerce.com",
-                telefone="123456789"
+                telefone="123456789",
+                role = "admin"
             )
             admin.set_senha("elson")
             db.session.add(admin)

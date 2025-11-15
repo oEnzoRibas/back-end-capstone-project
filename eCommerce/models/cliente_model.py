@@ -21,7 +21,7 @@ class Cliente(db.Model):
         """
         Representação em string do objeto Cliente
         """
-        return f'<Cliente {self.nome} - Email: {self.email}> - Telefone: {self.telefone}'
+        return f'<Cliente {self.nome} - Email: {self.email}> - Telefone: {self.telefone} - Role: {self.role}'
     
     def to_dict(self):
         """
@@ -32,6 +32,7 @@ class Cliente(db.Model):
             'nome': self.nome,
             'email': self.email,
             'telefone': self.telefone,
+            'role': self.role
         }
     
     def set_senha(self, senha):

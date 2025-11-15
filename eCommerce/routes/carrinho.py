@@ -4,9 +4,12 @@ from extensions import db
 from models.carrinho_model import Carrinho
 from models.produto_model import Produto
 from utils.carrinho_utils import (
-    adicionar_ao_carrinho, remover_do_carrinho, 
-    atualizar_quantidade_carrinho, obter_carrinho_cliente,
-    calcular_total_carrinho, limpar_carrinho
+    obter_carrinho_atual,
+    adicionar_ao_carrinho,
+    remover_do_carrinho,
+    atualizar_quantidade_carrinho,
+    calcular_total_carrinho,
+    limpar_carrinho
 )
 from utils.auth_utils import get_cliente_autenticado, cliente_autenticado
 
@@ -15,16 +18,9 @@ carrinho_bp = Blueprint('carrinho', __name__, url_prefix='/carrinho')
 @carrinho_bp.route('/')
 def visualizar():
     """Rota para visualizar o carrinho"""
-    if cliente_autenticado():
-        cliente = get_cliente_autenticado()
-        items = obter_carrinho_cliente(cliente.id)
-        total = calcular_total_carrinho(cliente.id)
-        
-        flash(f'Total do carrinho: R$ {total:.2f}', 'info')
-    else:
-        flash(f'Carrinho vazio ou usuário não autenticado.', 'info')
-        items = []
-        total = 0
+
+    items = obter_carrinho_atual()
+    total = calcular_total_carrinho()
     
     return render_template('carrinho/visualizar.html', items=items, total=total)
 
@@ -32,32 +28,28 @@ def visualizar():
 def adicionar(produto_id):
     """Rota para adicionar produto ao carrinho"""
     quantidade = request.form.get('quantidade', 1, type=int)
+    if quantidade < 1:
+        flash('A quantidade deve ser no mínimo 1.', 'danger')
+        return redirect(url_for('produtos.listar'))
     
-    if cliente_autenticado():
-        cliente = get_cliente_autenticado()
-        sucesso, mensagem = adicionar_ao_carrinho(produto_id, quantidade, cliente.id)
-    else:
-        sucesso, mensagem = adicionar_ao_carrinho(produto_id, quantidade, cliente_id=None)
-    
+    sucesso, mensagem = adicionar_ao_carrinho(produto_id, quantidade)
     if sucesso:
         flash(mensagem, 'success')
     else:
         flash(mensagem, 'danger')
     
     referrer = request.referrer
-    if referrer and 'produtos/detalhes' in referrer:
+    if referrer and 'produtos/' in referrer:
         return redirect(referrer)
+        
     return redirect(url_for('produtos.listar'))
 
 @carrinho_bp.route('/remover/<int:item_id>', methods=['POST'])
 def remover(item_id):
     """Rota para remover item do carrinho"""
-    if not cliente_autenticado():
-        flash('Você precisa estar logado.', 'warning')
-        return redirect(url_for('auth.login'))
     
-    cliente = get_cliente_autenticado()
-    sucesso, mensagem = remover_do_carrinho(item_id, cliente.id)
+    obter_carrinho_atual()
+    sucesso, mensagem = remover_do_carrinho(item_id)
     
     if sucesso:
         flash(mensagem, 'success')
@@ -69,13 +61,10 @@ def remover(item_id):
 @carrinho_bp.route('/atualizar/<int:item_id>', methods=['POST'])
 def atualizar(item_id):
     """Rota para atualizar quantidade no carrinho"""
-    if not cliente_autenticado():
-        flash('Você precisa estar logado.', 'warning')
-        return redirect(url_for('auth.login'))
+    obter_carrinho_atual()
     
     quantidade = request.form.get('quantidade', 1, type=int)
-    cliente = get_cliente_autenticado()
-    sucesso, mensagem = atualizar_quantidade_carrinho(item_id, quantidade, cliente.id)
+    sucesso, mensagem = atualizar_quantidade_carrinho(item_id, quantidade)
     
     if sucesso:
         flash(mensagem, 'success')

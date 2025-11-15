@@ -3,7 +3,7 @@ from flask import Blueprint, render_template, redirect, url_for, flash, request
 from extensions import db
 from models.produto_model import Produto
 from forms.produto_forms import ProdutoForm, AdicionarCarrinhoForm
-from utils.auth_utils import requer_autenticacao, get_cliente_autenticado
+from utils.auth_utils import requer_autenticacao, get_cliente_autenticado, requer_admin
 
 produtos_bp = Blueprint('produtos', __name__, url_prefix='/produtos')
 
@@ -23,6 +23,7 @@ def detalhes(produto_id):
 
 @produtos_bp.route('/criar', methods=['GET', 'POST'])
 @requer_autenticacao
+@requer_admin
 def criar():
     """Rota para criar novo produto (apenas admin)"""
     cliente = get_cliente_autenticado()
