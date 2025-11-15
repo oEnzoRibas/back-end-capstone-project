@@ -1,0 +1,35 @@
+from sqlalchemy import Column, Integer, String, ForeignKey 
+import datetime
+from extensions import db
+
+"""
+=================================================================
+3. TABELA DE PEDIDOS (pedidos)
+=================================================================
+"""
+class Pedido(db.Model):
+    __tablename__ = 'pedidos'
+    id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
+    client_id = Column(Integer, ForeignKey('clientes.id'), nullable=False)
+    data = Column(db.DateTime, default=datetime.datetime.now)
+    status = Column(String(256), default="pendente")
+
+    def __repr__(self):
+        return f'<Pedido {self.id} - Cliente {self.client_id} - Status {self.status}>'
+    
+"""
+=================================================================
+4. TABELA DE ITENS DE PEDIDO (itens_pedido)
+=================================================================
+"""
+class ItemPedido(db.Model):
+    __tablename__ = 'itens_pedido'
+    id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
+    pedido_id = Column(Integer, ForeignKey('pedidos.id'), nullable=False)
+    tipo = Column(String(256))
+    valor = Column(db.Numeric(10,2), nullable=False)
+    status = Column(String(256), default="aguardando")
+
+    def __repr__(self):
+        return f'<ItemPedido {self.id} - Pedido {self.pedido_id} - Tipo {self.tipo} - Valor {self.valor}>'
+    
