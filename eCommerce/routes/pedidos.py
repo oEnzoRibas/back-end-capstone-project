@@ -107,8 +107,8 @@ def confirmar_pagamento(pedido_id):
         flash('Você não tem permissão para acessar este pedido.', 'danger')
         return redirect(url_for('pedidos.listar'))
     
-    if pedido.pagamento:
-        pedido.pagamento.confirmar_pagamento()
+    if pedido.pagamentos:
+        pedido.pagamentos[0].confirmar_pagamento()
         pedido.atualizar_status('confirmado')
         db.session.commit()
         flash('Pagamento confirmado com sucesso!', 'success')

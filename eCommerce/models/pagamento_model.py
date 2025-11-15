@@ -16,3 +16,6 @@ class Pagamento(db.Model):
 
     def __repr__(self):
         return f'<Pagamento {self.id} - Pedido {self.pedido_id} - Valor {self.valor} - Status {self.status}>'
+    def confirmar_pagamento(self):
+        """Confirma o pagamento, atualizando o status."""
+        self.status = "confirmado"
