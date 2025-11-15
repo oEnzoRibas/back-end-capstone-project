@@ -1,53 +1,71 @@
-{%extends 'base.html' %}
+{% extends 'base.html' %}
 
-<header>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container">
-            {# Logo e link para a Home (assumindo que 'index.index' é a Home) #}
-            <a class="navbar-brand" href="{{ url_for('index.index') }}">
-                🛒 eCommerce
-            </a>
+{% block title %}Gerenciamento de Usuários{% endblock %}
 
-            <div class="navbar-nav ms-auto">
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-10">
+        <h1 class="mb-0">Usuários Registrados</h1>
+        <p class="text-muted">Lista completa de clientes e administradores do sistema.</p>
+    </div>
+    <div class="col-md-2 text-end">
+        {# Link opcional para criar usuário, se houver uma rota, ou apenas um painel #}
+        <a href="{{ url_for('produtos.listar') }}" class="btn btn-secondary">
+            Voltar ao Catálogo
+        </a>
+    </div>
+</div>
 
-                {# Link universal para o Catálogo #}
-                <a class="nav-link" href="{{ url_for('produtos.listar') }}">
-                    Catálogo
-                </a>
+{# Verifica se a lista de usuários foi passada (e se há usuários) #}
+{% if usuarios %}
+<div class="table-responsive">
+    <table class="table table-striped table-hover table-bordered">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Email</th>
+                <th>Telefone</th>
+                <th>Role (Função)</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in usuarios %}
+            <tr>
+                <td>{{ user.id }}</td>
+                <td>{{ user.nome }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.telefone | default('N/A', true) }}</td>
+                <td>
+                    {% if user.role == 'admin' %}
+                    <span class="badge bg-danger">Administrador</span>
+                    {% else %}
+                    <span class="badge bg-info">Cliente</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {# Links de Ação (Ajuste estas rotas conforme seu projeto) #}
+                    <a href="{{ url_for('cliente.perfil', user_id=user.id) }}"
+                        class="btn btn-sm btn-outline-primary me-2" title="Ver Detalhes">
+                        <i class="fas fa-eye"></i>
+                    </a>
+                    {# Exemplo de link para editar perfil (requer rota e decorador admin) #}
+                    {# <a href="{{ url_for('cliente.editar_perfil', user_id=user.id) }}"
+                        class="btn btn-sm btn-outline-warning" title="Editar">
+                        <i class="fas fa-edit"></i>
+                    </a> #}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="alert alert-info text-center mt-5">
+    <h4>Nenhum usuário registrado no sistema.</h4>
+</div>
+{% endif %}
 
-                {# Link universal para o Carrinho #}
-                <a class="nav-link" href="{{ url_for('carrinho.visualizar') }}">
-                    Carrinho
-                </a>
-
-                {# ---------------------------------------------------- #}
-                {# OPÇÕES APENAS PARA ADMINISTRADOR #}
-                {% if current_user.is_authenticated and current_user.role == 'admin' %}
-                <a class="nav-link fw-bold text-danger" href="{{ url_for('cliente.listar_usuarios') }}">
-                    <i class="fas fa-users"></i> Usuários
-                </a>
-                {% endif %}
-                {# ---------------------------------------------------- #}
-
-                {# LÓGICA CONDICIONAL DE AUTENTICAÇÃO #}
-                {% if current_user.is_authenticated %}
-                {# Usuário logado: Mostra nome e botão Sair #}
-                <a class="nav-link text-primary" href="{{ url_for('cliente.perfil') }}">
-                    Olá, **{{ current_user.nome.split(' ')[0] }}**
-                </a>
-                <a class="btn btn-secondary btn-sm" href="{{ url_for('auth.logout') }}">
-                    Sair
-                </a>
-                {% else %}
-                {# Usuário deslogado: Mostra Login e Registro #}
-                <a class="nav-link" href="{{ url_for('auth.login') }}">
-                    Login
-                </a>
-                <a class="btn btn-primary btn-sm ms-2" href="{{ url_for('auth.registrar') }}">
-                    Registrar
-                </a>
-                {% endif %}
-            </div>
-        </div>
-    </nav>
-</header>
+{# Para os ícones, garanta a inclusão do Font Awesome no seu base.html #}
+{% endblock %}
