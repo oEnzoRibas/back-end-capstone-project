@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %}{{ produto.nome }} - Loja Online{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <div class="card shadow">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h1>{{ produto.nome }}</h1>
+                        <p class="text-muted">ID: #{{ produto.id }}</p>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        {% if session.get('cliente_autenticado') %}
+                            <a href="{{ url_for('produtos.editar', produto_id=produto.id) }}" class="btn btn-warning btn-sm">
+                                Editar
+                            </a>
+                            <form method="POST" action="{{ url_for('produtos.deletar', produto_id=produto.id) }}" style="display:inline;">
+                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza?')">
+                                    Deletar
+                                </button>
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <hr>
+                
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h3 class="text-primary">R$ {{ "%.2f"|format(produto.preco) }}</h3>
+                        {% if produto.estoque > 0 %}
+                            <span class="badge bg-success fs-6">Em Estoque ({{ produto.estoque }} unidades)</span>
+                        {% else %}
+                            <span class="badge bg-danger fs-6">Fora de Estoque</span>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <h5>Descrição</h5>
+                    <p>{{ produto.descricao or 'Sem descrição disponível' }}</p>
+                </div>
+                
+                {% if produto.estoque > 0 %}
+                    <div class="card bg-light">
+                        <div class="card-body">
+                            <h5 class="card-title">Adicionar ao Carrinho</h5>
+                            <form method="POST" action="{{ url_for('carrinho.adicionar', produto_id=produto.id) }}">
+                                <div class="row g-2">
+                                    <div class="col-md-4">
+                                        <label for="quantidade" class="form-label">Quantidade</label>
+                                        <input type="number" id="quantidade" name="quantidade" class="form-control" value="1" min="1" max="{{ produto.estoque }}" required>
+                                    </div>
+                                    <div class="col-md-8 d-flex align-items-end">
+                                        <button type="submit" class="btn btn-primary w-100">
+                                            Adicionar ao Carrinho
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="alert alert-danger">
+                        Este produto está temporariamente indisponível.
+                    </div>
+                {% endif %}
+                
+                <div class="mt-4">
+                    <a href="{{ url_for('produtos.listar') }}" class="btn btn-secondary">
+                        ← Voltar aos Produtos
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

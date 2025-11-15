@@ -1,0 +1,28 @@
+<header>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('index.index') }}">
+                🛒 eCommerce
+            </a>
+
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="{{ url_for('index.index') }}">
+                    Catálogo
+                </a>
+                <a class="nav-link" href="{{ url_for('carrinho.visualizar') }}">
+                    Carrinho
+                </a>
+                <a class="nav-link text-primary" href="{{ url_for('cliente.perfil') }}">
+                    <a class="btn btn-secondary btn-sm" href="{{ url_for('auth.logout') }}">
+                        Sair
+                    </a>
+                    <a class="nav-link" href="{{ url_for('auth.login') }}">
+                        Login
+                    </a>
+                    <a class="btn btn-primary btn-sm ms-2" href="{{ url_for ('auth.registrar') }}">
+                        Registrar
+                    </a>
+            </div>
+        </div>
+    </nav>
+</header>

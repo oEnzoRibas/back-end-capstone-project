@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}eCommerce | {% endblock %}</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+    {% include 'includes/nav.html'%}
+    <main class="container mt-5">
+        {% include 'includes/messages.html' %}
+
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer class="text-center py-3 mt-5">
+        &copy; 2025 eCommerce - BackEnd Development Capstone Project. Devolped By <a
+            href="https://github.com/oEnzoRibas">oEnzoRibas</a>, Pedro Ramalho
+    </footer>
+</body>
+
+</html>

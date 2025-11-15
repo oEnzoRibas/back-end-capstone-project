@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block title %}Carrinho de Compras - Loja Online{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <h1>Carrinho de Compras</h1>
+
+        {% if items %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Produto</th>
+                        <th>Preço Unitário</th>
+                        <th>Quantidade</th>
+                        <th>Subtotal</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                    <tr>
+                        <td>
+                            <a href="{{ url_for('produtos.detalhes', produto_id=item.produto_id) }}">
+                                {{ item.nome_produto }}
+                            </a>
+                        </td>
+                        <td>R$ {{ "%.2f"|format(item.preco_unitario) }}</td>
+                        <td>
+                            <form method="POST" action="{{ url_for('carrinho.atualizar', item_id=item.id) }}"
+                                style="display:inline;">
+                                <div class="input-group" style="width: 120px;">
+                                    <input type="number" name="quantidade" class="form-control"
+                                        value="{{ item.quantidade }}" min="1" required>
+                                    <button type="submit" class="btn btn-sm btn-outline-secondary">Atualizar</button>
+                                </div>
+                            </form>
+                        </td>
+                        <td>R$ {{ "%.2f"|format(item.calcular_subtotal()) }}</td>
+                        <td>
+                            <form method="POST" action="{{ url_for('carrinho.remover', item_id=item.id) }}"
+                                style="display:inline;">
+                                <button type="submit" class="btn btn-sm btn-danger"
+                                    onclick="return confirm('Tem certeza?')">
+                                    Remover
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="alert alert-info text-center">
+            <h4>Seu carrinho está vazio</h4>
+            <p>Adicione produtos para começar a comprar!</p>
+            <a href="{{ url_for('produtos.listar') }}" class="btn btn-primary">
+                Continuar Comprando
+            </a>
+        </div>
+        {% endif %}
+    </div>
+
+    {% if items %}
+    <div class="col-md-4">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Resumo do Carrinho</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Subtotal:</span>
+                    <strong>R$ {{ "%.2f"|format(total) }}</strong>
+                </div>
+                <div class="d-flex justify-content-between mb-3">
+                    <span>Frete:</span>
+                    <strong>Grátis</strong>
+                </div>
+                <hr>
+                <div class="d-flex justify-content-between mb-3">
+                    <span class="fs-5">Total:</span>
+                    <strong class="fs-5">R$ {{ "%.2f"|format(total) }}</strong>
+                </div>
+
+                {% if session.get('cliente_autenticado') %}
+                <a href="{{ url_for('pedidos.criar') }}" class="btn btn-success w-100 mb-2">
+                    Finalizar Compra
+                </a>
+                {% else %}
+                <a href="{{ url_for('auth.login') }}" class="btn btn-success w-100 mb-2">
+                    Fazer Login para Comprar
+                </a>
+                <small class="text-muted d-block text-center mt-2">
+                    Voce precisa estar logado para finalizar a compra
+                </small>
+                {% endif %}
+
+                <form method="POST" action="{{ url_for('carrinho.limpar') }}">
+                    <button type="submit" class="btn btn-outline-danger w-100" onclick="return confirm('Tem certeza?')">
+                        Limpar Carrinho
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

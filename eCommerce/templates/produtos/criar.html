@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}Novo Produto - Loja Online{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow">
+            <div class="card-header bg-success text-white">
+                <h2 class="mb-0">Novo Produto</h2>
+            </div>
+            <div class="card-body">
+                <form method="POST" novalidate>
+                    {{ form.hidden_tag() }}
+
+                    <div class="mb-3">
+                        {{ form.nome.label(class="form-label") }}
+                        {% if form.nome.errors %}
+                        {{ form.nome(class="form-control is-invalid") }}
+                        <div class="invalid-feedback d-block">
+                            {% for error in form.nome.errors %}
+                            <span>{{ error }}</span><br>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        {{ form.nome(class="form-control") }}
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.descricao.label(class="form-label") }}
+                        {% if form.descricao.errors %}
+                        {{ form.descricao(class="form-control is-invalid", rows="4") }}
+                        <div class="invalid-feedback d-block">
+                            {% for error in form.descricao.errors %}
+                            <span>{{ error }}</span><br>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        {{ form.descricao(class="form-control", rows="4") }}
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.preco.label(class="form-label") }}
+                        {% if form.preco.errors %}
+                        {{ form.preco(class="form-control is-invalid") }}
+                        <div class="invalid-feedback d-block">
+                            {% for error in form.preco.errors %}
+                            <span>{{ error }}</span><br>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        {{ form.preco(class="form-control", placeholder="0.00") }}
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.estoque.label(class="form-label") }}
+                        {% if form.estoque.errors %}
+                        {{ form.estoque(class="form-control is-invalid") }}
+                        <div class="invalid-feedback d-block">
+                            {% for error in form.estoque.errors %}
+                            <span>{{ error }}</span><br>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        {{ form.estoque(class="form-control") }}
+                        {% endif %}
+                    </div>
+
+                    <div class="d-grid gap-2 mb-3">
+                        {{ form.submit(class="btn btn-success btn-lg") }}
+                    </div>
+                </form>
+
+                <a href="{{ url_for('produtos.listar') }}" class="btn btn-secondary w-100">Cancelar</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

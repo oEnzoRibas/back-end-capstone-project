@@ -1,0 +1,11 @@
+{%extends "base.html"%}
+{%block title%}Loja Virtual - Página Inicial{%endblock%}
+
+{%block content%}
+<h1>Bem-vindo à Nossa Loja Virtual!</h1>
+<p>Explore nossos produtos e aproveite as ofertas especiais.</p>
+
+<a href="{{ url_for('produtos.listar') }}">
+    <p>Catálogo de Produtos</p>
+</a>
+{%endblock%}

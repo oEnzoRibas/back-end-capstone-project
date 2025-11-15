@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}Finalizar Compra - Loja Online{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <h1>Finalizar Compra</h1>
+        
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Itens do Pedido</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Produto</th>
+                                <th>Preço Unitário</th>
+                                <th>Quantidade</th>
+                                <th>Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in items %}
+                                <tr>
+                                    <td>{{ item.nome_produto }}</td>
+                                    <td>R$ {{ "%.2f"|format(item.preco_unitario) }}</td>
+                                    <td>{{ item.quantidade }}</td>
+                                    <td>R$ {{ "%.2f"|format(item.calcular_subtotal()) }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card shadow">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">Resumo do Pedido</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <h6>Total: <strong>R$ {{ "%.2f"|format(total) }}</strong></h6>
+                </div>
+                
+                <hr>
+                
+                <form method="POST" novalidate>
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="mb-3">
+                        {{ form.tipo_pagamento.label(class="form-label") }}
+                        {% if form.tipo_pagamento.errors %}
+                            {{ form.tipo_pagamento(class="form-select is-invalid") }}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.tipo_pagamento.errors %}
+                                    <span>{{ error }}</span><br>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.tipo_pagamento(class="form-select") }}
+                        {% endif %}
+                    </div>
+                    
+                    <div class="d-grid gap-2 mb-3">
+                        {{ form.submit(class="btn btn-success btn-lg") }}
+                    </div>
+                </form>
+                
+                <a href="{{ url_for('carrinho.visualizar') }}" class="btn btn-secondary w-100">
+                    Voltar ao Carrinho
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

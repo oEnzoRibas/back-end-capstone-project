@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Meu Perfil - Loja Online{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h2 class="mb-0">Meu Perfil</h2>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <h5>Nome</h5>
+                        <p class="text-muted">{{ cliente.nome }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Email</h5>
+                        <p class="text-muted">{{ cliente.email }}</p>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <h5>Telefone</h5>
+                        <p class="text-muted">{{ cliente.telefone or 'Não informado' }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Data de Cadastro</h5>
+                        <p class="text-muted">{{ cliente.data_criacao.strftime('%d/%m/%Y') if cliente.data_criacao else
+                            'N/A' }}</p>
+                    </div>
+                </div>
+
+                <hr>
+
+                <div class="d-flex gap-2">
+                    <a href="{{ url_for('cliente.editar_perfil') }}" class="btn btn-primary">
+                        Editar Perfil
+                    </a>
+                    <a href="{{ url_for('pedidos.listar') }}" class="btn btn-secondary">
+                        Meus Pedidos
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
