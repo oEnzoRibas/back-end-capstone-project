@@ -311,6 +311,14 @@ main {
   color: var(--surface);
 }
 
+.btn-registrar {
+    color: white; 
+}
+
+.btn-registrar:hover {
+    color: black ; 
+}
+
 .btn-secondary {
   background-color: var(--secondary);
   border-color: var(--secondary);
