@@ -46,3 +46,4 @@ class Cliente(db.Model):
         Verifica se a senha fornecida corresponde ao hash armazenado.
         """
         return check_password_hash(self.senha_hash, senha)
+    

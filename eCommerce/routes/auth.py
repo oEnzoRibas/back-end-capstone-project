@@ -16,6 +16,11 @@ def registrar():
     form = RegistroForm()
     if form.validate_on_submit():
         try:
+
+            if Cliente.query.filter_by(email=form.email.data).first():
+                flash('Email já registrado. Por favor, use outro email.', 'danger')
+                return render_template('auth/registrar.html', form=form)
+            
             cliente = Cliente(
                 nome=form.nome.data,
                 email=form.email.data,
