@@ -61,3 +61,5 @@
 [2025-11-21 14:27:15,419] INFO em app: Aplicação inicializada e logs configurados.
 [2025-11-21 14:39:10,745] WARNING em app: 404 - Rota não encontrada: /produtos/oi
 [2025-11-21 14:39:40,276] INFO em app: Aplicação inicializada e logs configurados.
+[2025-11-21 14:47:05,925] INFO em app: Aplicação inicializada e logs configurados.
+[2025-11-21 14:47:07,886] INFO em app: Aplicação inicializada e logs configurados.
