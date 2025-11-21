@@ -54,3 +54,10 @@
 [2025-11-21 13:54:03,372] WARNING em app: 404 - Rota não encontrada: /.well-known/appspecific/com.chrome.devtools.json
 [2025-11-21 13:55:11,438] WARNING em app: 404 - Rota não encontrada: /joao
 [2025-11-21 13:55:26,517] INFO em app: Aplicação inicializada e logs configurados.
+[2025-11-21 14:03:30,729] INFO em app: Aplicação inicializada e logs configurados.
+[2025-11-21 14:03:52,185] INFO em app: Aplicação inicializada e logs configurados.
+[2025-11-21 14:03:53,567] INFO em app: Aplicação inicializada e logs configurados.
+[2025-11-21 14:19:27,634] INFO em app: Aplicação inicializada e logs configurados.
+[2025-11-21 14:27:15,419] INFO em app: Aplicação inicializada e logs configurados.
+[2025-11-21 14:39:10,745] WARNING em app: 404 - Rota não encontrada: /produtos/oi
+[2025-11-21 14:39:40,276] INFO em app: Aplicação inicializada e logs configurados.
