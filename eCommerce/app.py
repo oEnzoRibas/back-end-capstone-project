@@ -1,12 +1,41 @@
 import os
-from flask import Flask
+from flask import Flask, render_template, request
 from config import Config
 from extensions import db, login_manager
+import logging
+from logging.handlers import RotatingFileHandler
+import os
 
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
     db.init_app(app)
+
+    def configure_logs():
+        """Configura o sistema de logs para gravar em arquivo rotativo"""
+        if not os.path.exists('logs'):
+            os.makedirs('logs')
+
+        log_path = os.path.join('logs', 'ecommerce.log')
+
+        # 20 MB, 5 arquivos de backup
+        handler = RotatingFileHandler(
+            log_path, 
+            maxBytes=20 * 1024 * 1024, 
+            backupCount=5,
+            encoding='utf-8'
+        )
+
+        formatter = logging.Formatter(
+            '[%(asctime)s] %(levelname)s em %(module)s: %(message)s'
+        )
+
+        handler.setFormatter(formatter)
+        app.logger.addHandler(handler)
+        app.logger.setLevel(logging.INFO)
+        app.logger.info('Aplicação inicializada e logs configurados.')
+
+    configure_logs()
 
     login_manager.init_app(app)
 
@@ -75,6 +104,16 @@ def create_app():
         app.register_blueprint(pedidos_bp)
         app.register_blueprint(cliente_bp)
         app.register_blueprint(index_bp)
+
+    @app.errorhandler(404)
+    def page_not_found(error):
+        app.logger.warning(f"404 - Rota não encontrada: {request.path}")
+        return render_template('404.html'), 404
+
+    @app.errorhandler(500)
+    def internal_server_error(error):
+        app.logger.error(f"500 - Erro interno do servidor: {error}")
+        return render_template('500.html'), 500
 
     return app
 

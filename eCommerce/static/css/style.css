@@ -312,11 +312,11 @@ main {
 }
 
 .btn-registrar {
-    color: white; 
+  color: white;
 }
 
 .btn-registrar:hover {
-    color: black ; 
+  color: black;
 }
 
 .btn-secondary {
@@ -741,6 +741,23 @@ footer {
 
 /* Mobile Overrides (max-width: 767px) */
 @media (max-width: 767px) {
+  .navbar-nav {
+    overflow-x: auto;
+    white-space: nowrap;
+    justify-content: flex-start !important; /* Força o alinhamento à esquerda para scroll */
+    padding-bottom: var(--spacing-sm); /* Espaço para a barra de rolagem */
+  }
+
+  .navbar-nav .nav-link,
+  .navbar-nav .btn {
+    display: inline-block;
+    flex-shrink: 0; /* Impede que os itens encolham */
+  }
+
+  .navbar-brand {
+    font-size: var(--font-size-lg);
+  }
+
   .navbar-brand {
     font-size: var(--font-size-lg);
   }
