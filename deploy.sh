@@ -2,11 +2,11 @@
 
 set -e
 
-echo "🚀 Iniciando deploy no Amazon Linux 2..."
+echo "🚀 Iniciando deploy no Amazon Linux 2023..."
 
 # --- Atualização e dependências ---
 sudo yum update -y
-sudo yum install -y python3 python3-venv python3-pip nginx git
+sudo yum install -y python3 python3-pip nginx git
 
 # --- Ativar Nginx ---
 sudo systemctl enable nginx
@@ -18,6 +18,7 @@ if [ ! -d "back-end-capstone-project" ]; then
 fi
 
 cd back-end-capstone-project
+cd eCommerce
 
 # --- Ambiente virtual ---
 python3 -m venv venv
