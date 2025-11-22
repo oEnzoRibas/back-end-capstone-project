@@ -5,20 +5,20 @@ from models.pedido_model import Pedido, ItemPedido
 from models.pagamento_model import Pagamento
 from models.produto_model import Produto
 from forms.pagamento_forms import PagamentoForm
-from utils.auth_utils import requer_autenticacao, get_cliente_autenticado
+from utils.auth_utils import requer_autenticacao, get_cliente_autenticado, get_client_by_id
 from utils.carrinho_utils import obter_carrinho_atual, calcular_total_carrinho, limpar_carrinho
 from datetime import datetime
 
 pedidos_bp = Blueprint('pedidos', __name__, url_prefix='/pedidos')
 
-@pedidos_bp.route('/')
+@pedidos_bp.route('/<int:cliente_id>/listar')
 @requer_autenticacao
-def listar():
+def listar(cliente_id):
     """Rota para listar pedidos do cliente"""
-    clienteAuth = get_cliente_autenticado()
+    user = get_client_by_id(cliente_id)
     page = request.args.get('page', 1, type=int)
-    pedidos = Pedido.query.filter_by(cliente_id=clienteAuth.id).paginate(page=page, per_page=10)
-    return render_template('pedidos/listar.html', pedidos=pedidos)
+    pedidos = Pedido.query.filter_by(cliente_id=cliente_id).paginate(page=page, per_page=10)
+    return render_template('pedidos/listar.html', pedidos=pedidos, user=user)
 
 @pedidos_bp.route('/<int:pedido_id>')
 @requer_autenticacao
@@ -30,7 +30,7 @@ def detalhes(pedido_id):
     # Verifica se o pedido pertence ao cliente
     if pedido.cliente_id != cliente.id:
         flash('Você não tem permissão para acessar este pedido.', 'danger')
-        return redirect(url_for('pedidos.listar'))
+        return redirect(url_for('cliente.listar_usuarios'))
     
     return render_template('pedidos/detalhes.html', pedido=pedido)
 

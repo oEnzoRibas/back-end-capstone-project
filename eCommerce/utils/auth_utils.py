@@ -22,6 +22,10 @@ def get_cliente_autenticado():
         return Cliente.query.get(cliente_id)
     return None
 
+def get_client_by_id(cliente_id):
+    """Retorna o cliente pelo ID ou None"""
+    return Cliente.query.get(cliente_id)
+
 def cliente_autenticado():
     """Verifica se há um cliente autenticado"""
     return session.get('cliente_autenticado', False)

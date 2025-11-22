@@ -2,8 +2,8 @@
 {% if messages %}
 <ul class="flashes">
     {% for category, message in messages %}
-    {# A 'category' pode ser usada para estilizar (ex: 'success', 'danger', 'info') #}
-    <li class="{{ category }}">{{ message }}</li>
+    {% set css = 'danger' if category == 'error' else category %}
+    <li class="alert alert-{{ css }}" role="alert">{{ message }}</li>
     {% endfor %}
 </ul>
 {% endif %}

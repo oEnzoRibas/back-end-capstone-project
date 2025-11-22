@@ -54,9 +54,7 @@ Online{% endblock %} {% block content %}
               {% for item in pedido.itens %}
               <tr>
                 <td>
-                  <a
-                    href="{{ url_for('produtos.detalhes', produto_id=item.produto_id) }}"
-                  >
+                  <a href="{{ url_for('produtos.detalhes', produto_id=item.produto_id) }}">
                     {{ item.produto.nome if item.produto else 'Produto Removido'
                     }}
                   </a>
@@ -90,9 +88,7 @@ Online{% endblock %} {% block content %}
         <hr />
         <div class="d-flex justify-content-between mb-3">
           <span class="fs-5">Total:</span>
-          <strong class="fs-5"
-            >R$ {{ "%.2f"|format(pedido.calcular_total()) }}</strong
-          >
+          <strong class="fs-5">R$ {{ "%.2f"|format(pedido.calcular_total()) }}</strong>
         </div>
       </div>
     </div>
@@ -132,11 +128,7 @@ Online{% endblock %} {% block content %}
 
         {# Botão de Ação: Confirmar Pagamento #} {% if pagamento.status ==
         'aguardando' %}
-        <form
-          method="POST"
-          action="{{ url_for('pedidos.confirmar_pagamento', pedido_id=pedido.id) }}"
-          class="mt-3"
-        >
+        <form method="POST" action="{{ url_for('pedidos.confirmar_pagamento', pedido_id=pedido.id) }}" class="mt-3">
           <button type="submit" class="btn btn-success w-100">
             Confirmar Pagamento
           </button>
@@ -146,26 +138,17 @@ Online{% endblock %} {% block content %}
     </div>
     {% endif %} {# Botão de Ação: Cancelar Pedido #} {% if pedido.status in
     ['pendente', 'confirmado'] %}
-    <form
-      method="POST"
-      action="{{ url_for('pedidos.cancelar', pedido_id=pedido.id) }}"
-      class="mt-3"
-    >
-      <button
-        type="submit"
-        class="btn btn-danger w-100"
-        onclick="return confirm('Tem certeza que deseja cancelar este pedido? Isso restaurará o estoque.')"
-      >
+    <form method="POST" action="{{ url_for('pedidos.cancelar', pedido_id=pedido.id) }}" class="mt-3">
+      <button type="submit" class="btn btn-danger w-100"
+        onclick="return confirm('Tem certeza que deseja cancelar este pedido? Isso restaurará o estoque.')">
         Cancelar Pedido
       </button>
     </form>
     {% endif %}
 
     <div class="mt-3">
-      <a
-        href="{{ url_for('pedidos.listar') }}"
-        class="btn btn-secondary w-100 btn-registrar"
-      >
+      <a href="{{ url_for('pedidos.listar', cliente_id=pedido.cliente_id) }}"
+        class="btn btn-secondary w-100 btn-registrar">
         Voltar aos Pedidos
       </a>
     </div>

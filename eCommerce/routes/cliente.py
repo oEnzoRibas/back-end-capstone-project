@@ -7,11 +7,11 @@ from utils.auth_utils import requer_autenticacao, get_cliente_autenticado, reque
 
 cliente_bp = Blueprint('cliente', __name__, url_prefix='/cliente')
 
-@cliente_bp.route('/perfil')
+@cliente_bp.route('/perfil/<int:user_id>')
 @requer_autenticacao
-def perfil():
+def perfil(user_id):
     """Rota para visualizar perfil do cliente"""
-    cliente = get_cliente_autenticado()
+    cliente = Cliente.query.get_or_404(user_id)
     return render_template('cliente/perfil.html', cliente=cliente)
 
 @cliente_bp.route('/perfil/editar', methods=['GET', 'POST'])
@@ -43,4 +43,4 @@ def editar_perfil():
 def listar_usuarios():
     """Rota para listar todos os usuários (apenas admin)"""
     clientes = Cliente.query.all()
-    return render_template('cliente/listar_usuarios.html', usuarios=clientes)
+    return render_template('cliente/listar_usuarios.html', usuarios=clientes, current_user=get_cliente_autenticado())

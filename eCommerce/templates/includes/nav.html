@@ -5,48 +5,31 @@
         🛒 eCommerce
       </a>
 
-      <div
-        class="navbar-nav d-flex align-items-center justify-content-center w-100"
-      >
+      <div class="navbar-nav d-flex align-items-center justify-content-center w-100">
         <!-- Links sempre visíveis -->
-        <a class="nav-link me-3" href="{{ url_for('produtos.listar') }}"
-          >Catálogo</a
-        >
-        <a class="nav-link me-3" href="{{ url_for('carrinho.visualizar') }}"
-          >Carrinho</a
-        >
+        <a class="nav-link me-3" href="{{ url_for('produtos.listar') }}">Catálogo</a>
+        <a class="nav-link me-3" href="{{ url_for('carrinho.visualizar') }}">Carrinho</a>
 
         <!-- Se estiver logado E for admin -->
         {% if session.get('cliente_autenticado') and session.get('cliente_role')
         == 'admin' %}
-        <a
-          class="nav-link fw-bold text-danger me-3"
-          href="{{ url_for('cliente.listar_usuarios') }}"
-        >
+        <a class="nav-link fw-bold text-danger me-3" href="{{ url_for('cliente.listar_usuarios') }}">
           <i class="fas fa-users"></i> Usuários
         </a>
         {% endif %}
 
         <!-- Se estiver logado -->
         {% if session.get('cliente_autenticado') %}
-        <a class="nav-link me-3" href="{{ url_for('cliente.perfil') }}"
-          >Meu Perfil</a
-        >
+        <a class="nav-link me-3" href="{{ url_for('cliente.perfil', user_id=session.get('cliente_id')) }}">Meu
+          Perfil</a>
 
-        <a
-          class="btn btn-secondary btn-sm me-3 btn-registrar"
-          href="{{ url_for('auth.logout') }}"
-        >
+        <a class="btn btn-secondary btn-sm me-3 btn-registrar" href="{{ url_for('auth.logout') }}">
           Logout
         </a>
 
         <!-- Se NÃO estiver logado -->
         {% else %}
-        <a
-          class="btn btn-primary btn-sm ms-2 btn-registrar"
-          href="{{ url_for('auth.login') }}"
-          >Login</a
-        >
+        <a class="btn btn-primary btn-sm ms-2 btn-registrar" href="{{ url_for('auth.login') }}">Login</a>
 
         {% endif %}
       </div>

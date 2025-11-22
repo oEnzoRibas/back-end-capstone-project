@@ -60,7 +60,8 @@
                     </div>
                 </form>
 
-                <a href="{{ url_for('cliente.perfil') }}" class="btn btn-secondary w-100">Cancelar</a>
+                <a href="{{ url_for('cliente.perfil', user_id=cliente.id) }}"
+                    class="btn btn-secondary w-100">Cancelar</a>
             </div>
         </div>
     </div>
