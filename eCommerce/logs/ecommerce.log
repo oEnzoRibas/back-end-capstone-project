@@ -88,3 +88,7 @@
 [2025-11-22 11:45:35,723] INFO em app: Aplicação inicializada e logs configurados.
 [2025-11-22 11:45:43,567] INFO em app: Aplicação inicializada e logs configurados.
 [2025-11-22 11:45:51,763] INFO em app: Aplicação inicializada e logs configurados.
+[2025-11-24 09:47:09,596] INFO em app: Aplicação inicializada e logs configurados.
+[2025-11-24 09:47:12,199] INFO em app: Aplicação inicializada e logs configurados.
+[2025-11-24 09:48:23,380] WARNING em app: 404 - Rota não encontrada: /auth/login/09
+[2025-11-24 09:50:36,612] INFO em app: Aplicação inicializada e logs configurados.
